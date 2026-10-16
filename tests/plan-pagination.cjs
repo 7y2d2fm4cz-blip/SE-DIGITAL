@@ -1,0 +1,10 @@
+const fs=require('fs'),vm=require('vm'),path=require('path'),assert=require('node:assert/strict'),root=path.join(__dirname,'..'),ctx={console,structuredClone};vm.createContext(ctx);
+for(const f of ['engine.js','wall-qds.js','spatial.js','transport.js','drawings.js','installation.js','project-models.js','plan-pages.js'])vm.runInContext(fs.readFileSync(path.join(root,f),'utf8'),ctx,{filename:f});
+const results=[];for(const example of ctx.SEProjectModels.list()){const state=JSON.parse(example.snapshot),c=state.profiles.Actemium,m=ctx.SE.calculate(state.loads,c),r=ctx.SEInstallation.calculate(m,c);m.installation=r;const before=JSON.stringify(m),pages=ctx.SEPlanPages.descriptors(m,c),spatial=r.spatial;assert(pages.length>0);assert.equal(pages[0].x0,0);assert(Math.abs(pages.at(-1).x1-m.length)<1e-7);
+ let previous=0;for(const [i,p]of pages.entries()){if(p.legendPage===0){assert(Math.abs(p.x0-previous)<1e-7);previous=p.x1;}assert(p.x1>p.x0);assert(p.x1-p.x0<=18+1e-7);for(const mode of ['plan','routing']){const svg=ctx.SEPlanPages.render(m,c,p,i,pages.length,mode);assert(svg.endsWith('</svg>'));assert(!/NaN|undefined/.test(svg));assert(svg.includes('data-x0="'+p.x0+'"'));}}
+ for(const e of spatial.equipment){assert(pages.some(p=>e.x<p.x1-1e-7&&e.x+e.w>p.x0+1e-7));for(const p of pages.filter(p=>p.legendPage===0))if(e.x<p.x1-1e-7&&e.x+e.w>p.x0+1e-7)assert(ctx.SEPlanPages.render(m,c,p).includes('data-equipment="'+ctx.Draw.esc(e.id)+'"'));}
+ const all=ctx.Draw.sld(m,c),tags=ctx.Draw.sldTags(m);assert.equal(tags.length,all.length);tags.forEach((tag,i)=>assert.equal(ctx.Draw.sld(m,c,tag)[0],all[i]));
+ for(const p of m.panelComposition)assert(ctx.Draw.columnPage(m,c,p.panelTag).includes('<svg'));
+ assert.equal(JSON.stringify(m),before);results.push({model:example.key,pages:pages.length,panels:tags.length});
+}
+console.log(JSON.stringify(results));console.log('PASS: continuous <=18m windows cover all equipment; plan/routing sheets; selected SLD exactly matches full drawing; one column view; geometry and quantities unchanged.');
