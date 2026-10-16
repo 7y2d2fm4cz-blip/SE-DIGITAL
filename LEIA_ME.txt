@@ -1,0 +1,49 @@
+SE DIGITAL — ACTEMIUM
+Atualização: 16/10/2026
+
+Extraia o ZIP e abra index.html. Não é necessário BAT, servidor ou internet.
+
+FLUXO
+1. Cargas: cadastro manual ou CSV; informe painel e barra de destino.
+2. Unifilares: um painel por folha, com navegação entre alimentadores.
+3. Painéis: memória de cálculo e vistas frontal, superior e lateral.
+4. Arranjo: planta, corte, vista 3D, posições dos painéis e rasgos.
+5. Interligações: força, controle, instrumentação, rede e fibra.
+6. Bandejamento: rotas associadas às posições e rasgos; segregação e ocupação.
+
+QUADROS 220 V DE PAREDE
+Quadros CA 220 V, barra A, utilizam por padrão caixas de sobrepor com barramento espinha de peixe. O seletor permite manter painel de piso quando necessário.
+Referência dimensional: BSE/BRUM, séries 100 A e 250 A. A seleção combina corrente, polos dos circuitos, reserva e módulos auxiliares. Informe módulos de DR, DPS e auxiliares; zero representa requisito ainda não definido.
+100 A: 18/28/34/46 polos, largura 345 mm, profundidade 100 mm e alturas 482/587/642/752 mm.
+250 A: 24/36/48/60 polos, largura 470 mm, profundidade 120 mm e alturas 695/805/910/1020 mm.
+A altura de montagem é editável. Planta, corte, 3D, rasgos e subidas de cabos usam as dimensões da caixa e sua posição.
+Quadros 220 V possuem somente barra A; cargas e cadastros anteriores A/B são normalizados para A. Configurações fora do catálogo recebem aviso e conservam a solução de piso. A seleção dimensional não confirma Icc, proteção, aquecimento, ambiente ou aprovação do conjunto montado.
+Fontes: https://bsepaineis.com.br/quadro-de-distribuicao-eletrica/quadro-de-distribuicao-100a/ e páginas de produto BSE vinculadas na aplicação.
+
+PROJETOS E LIMITES
+Projetos são armazenados no navegador, separados por projeto. Use o mesmo navegador e dispositivo para reabri-los.
+Ferramenta de pré-dimensionamento conceitual para orçamento. Verifique dados de fabricantes, documentos contratuais e requisitos normativos na engenharia final. O sistema não declara conformidade automática.
+Porão sob o eletrocentro, fechamento em tela e altura máxima de 3,50 m. Cabos e bandejas exigem validação elétrica, mecânica, térmica e de instalação.
+
+ARRANJO E ACESSOS
+Não há faixa interna adicional de circulação longitudinal de 1,50 m. Passarelas externas fazem a interligação das salas. Mantidos os acessos frontais e traseiros de manutenção. Rotas tracejadas nos acessos livres conduzem a duas portas de pessoal por sala, abrindo para fora. Porta dupla independente para movimentação de equipamentos; vão conceitual relacionado à maior coluna e faixas livres nas extremidades. Verificar altura, retirada, giros, obstruções, percurso até as escadas e exigências locais de incêndio no projeto.
+Salas de eletrônica, baterias e automação possuem uma porta dupla compartilhada para acesso e movimentação. Salas elétricas MT/BT usam porta dupla compartilhada e uma segunda porta de pessoal independente. Portas duplas: referência mínima 2,00 m de largura e 2,40 m de altura, ampliada conforme maior coluna/equipamento. Conferir retirada, giro, logística e patamares.
+Em Arranjo, Local dos auxiliares permite alocar conversores e automação na sala BT. Para painéis cadastrados, altere a sala do painel/carga para BT. Baterias mantêm sala exclusiva.
+
+OTIMIZAÇÃO DOS ACESSOS
+A porta dupla de equipamentos também é um acesso; não há terceira porta redundante. Faixa de retirada dimensionada apenas no lado da porta dupla. Lado oposto reserva passagem/folga. Mantidos corredores de fabricante e folgas informadas. Esta otimização geométrica não certifica mínimo global nem conformidade integral. Confirmar ocupação, percursos, ferragens, abertura sem chave, compartimentação, patamares e giro das folhas sem redução da largura útil da passarela, conforme legislação local. Referência consultada: IT 08 CBMMG, itens 5.4.3 e 5.5.4; confirmar edição aplicável ao empreendimento.
+CONFIGURAÇÃO COMPACTA
+Por padrão, eletrônica/UPS/retificadores e automação compartilham a sala BT, incluindo os quadros de distribuição antes identificados pela sala genérica UPS / eletrônica. A sala de baterias permanece exclusiva. Em Arranjo, Local dos auxiliares permite restabelecer salas próprias conforme requisitos contratuais. As fileiras automáticas recebem primeiro os painéis mais longos; conjuntos contínuos e posições manuais são preservados. Esta compactação não reduz os corredores informados nem os mínimos dimensionais cadastrados de fabricante e não declara conformidade integral.
+TRANSPORTE RODOVIÁRIO
+Passarelas, escadas/guarda-corpos, pilotis e grades/telas do porão seguem desmontados em volumes separados. O envelope da cabine exclui esses itens e a altura do porão instalado.
+Aba Arranjo: compara cenários de largura máxima embalada 2,60 / 3,20 / 4,00 m. Modo padrão escolhe a menor quantidade de módulos e, em empate, a menor largura de cenário; admite transporte especial, não minimiza custo total. Priorizar 2,60 m e largura manual são opções.
+Altura transportada = pé-direito + piso/cobertura + embalagem superior/inferior + piso da carreta. Parâmetros editáveis. O comprimento útil inicial de 12 m é premissa logística, não limite legal.
+Limites gerais de largura 2,60 m e altura 4,40 m aplicam-se ao veículo com carga, conforme CONTRAN 882/2021 e alterações. Excedentes exigem análise de AET e do percurso; DNIT 11/2022 e alterações. Triagem dimensional não confirma peso por eixo, PBT/PBTC, comprimento total, rota, escoltas ou autorização. Massas e centro de gravidade pendentes. Juntas que interceptam equipamentos são identificadas para revisão. Referência: https://www.gov.br/dnit/pt-br/assuntos/infraestrutura-rodoviaria/aet — consulta 16/10/2026.
+MASSA DOS MÓDULOS
+Preço removido. Prancha informa quantidade, dimensões e massa de cada módulo e total das cabines carregadas. Premissas iniciais editáveis: cabine 250 kg/m²; embalagem 100 kg/módulo; MT 600 kg/cubículo; BT 300 kg/coluna; quadro de parede 25 kg; demais equipamentos 200 kg/un. São hipóteses de planejamento, não dados certificados. Estantes usam massa de blocos e estrutura do banco calculado. Massas individuais podem ser substituídas pelos dados de fabricante em Arranjo. Volumes desmontados seguem separados; zero significa pendente. Cabos, bandejas, HVAC e itens não cadastrados estão excluídos. Atribuição por centro geométrico; juntas interceptando equipamentos exigem revisão. Não substitui pesagem, plano de içamento, centro de gravidade nem verificação por eixo.
+
+SALA DE BATERIAS COMPACTA
+Porta dimensionada pela maior largura de estante + 0,20 m, mínimo conceitual de 1,20 m; altura pela maior estante + 0,20 m, mínimo 2,10 m. Folga lateral final padrão 0,30 m, editável. Mantidos corredor frontal de baterias e afastamento traseiro configurados. Não reduz capacidade, número de blocos ou estantes. Validar ventilação, troca dos blocos, percurso de retirada, estrutura e exigências contratuais.
+
+PAINÉIS A/B
+Vista frontal: todas as colunas do mesmo painel ficam numa única prancha, sem quebra a cada seis colunas. Ordem: saídas A, entrada A, TIE, entrada B e saídas B. Largura da prancha cresce com o conjunto; use zoom para leitura. Vistas superior e lateral permanecem na folha específica do mesmo painel. Cabeçalho e barra lateral mostram versão e data/hora fixa da atualização em Brasília.
