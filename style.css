@@ -43,3 +43,8 @@
 @media print{.arrangement-drawing-controls,.arrangement-settings{display:none!important}}
 
 .saved-model-description{display:block;max-width:620px;font-size:11px;color:#65758a;line-height:1.5;margin-top:5px}
+
+/* Paginated engineering workspace. */
+.data-group{margin:12px 0;border:1px solid #d8e2ec;border-radius:8px;background:#fff}.data-group>summary{cursor:pointer;padding:12px 14px;font-weight:600;color:#16334b}.data-group-body{padding:0 12px 12px}.data-pagination,.sld-page-nav{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 12px;background:#f4f8fc;border-radius:6px;margin:8px 0}.data-pagination select,.sld-page-nav select{max-width:320px;font-size:12px}.data-pagination label,.sld-page-nav label{display:flex;align-items:center;gap:8px}.data-pagination span{font-size:12px;color:#526277}.data-group .table-scroll{max-height:650px;overflow:auto}.data-group table{font-size:12px}.data-group td,.data-group th{padding:7px 9px}#plantDrawing,#columnDrawing,#sldDrawing,#cableDrawing{min-height:240px}#plantDrawing svg,#cableDrawing svg{display:block;margin:auto}#arrangementConfig details .arrangement-config-body{max-height:650px;overflow:auto}@media print{.data-pagination,.sld-page-nav,#arrangementPageNav,#cablePageNav{display:none!important}.print-sheet{break-inside:avoid;break-after:page}.print-sheet svg{width:100%;max-height:260mm}.data-group .table-scroll{max-height:none;overflow:visible}}
+
+@media print{.print-text thead{display:table-header-group}.print-text tr{break-inside:avoid}}
