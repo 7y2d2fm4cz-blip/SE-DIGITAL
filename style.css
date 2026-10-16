@@ -22,3 +22,22 @@
 #wallQdConfig{overflow:auto}#wallQdConfig td{font-size:11px;min-width:100px}#wallQdConfig td:last-child{min-width:280px}#wallQdConfig td input{width:75px;font-size:12px}#wallQdConfig td label{display:flex;flex-direction:row;align-items:center;font-size:10px;margin-bottom:5px}#wallQdConfig td select{max-width:170px;font-size:11px}#wallQdConfig small{font-size:10px;color:#8795a4}
 
 .site-version{font-size:10px;line-height:1.4;font-weight:400;color:#65758a;white-space:nowrap}.side-bottom b{font-size:10px;font-weight:400;line-height:1.6}
+
+/* Arrangement workspace: drawing first, controls remain within reach. */
+.arrangement-drawing-controls{position:sticky;top:0;z-index:20;display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;padding:10px 12px;background:#f8fbfd;border:1px solid var(--line);border-radius:8px;box-shadow:0 3px 8px #112b4010}
+.arrangement-drawing-controls .button-row,.arrangement-drawing-controls .zoom{margin:0}
+.arrangement-drawing-controls .fields{display:flex;flex-wrap:wrap;gap:10px;margin:0;padding:0;flex:1}
+.arrangement-drawing-controls label{font-size:12px;gap:3px}
+.arrangement-drawing-controls select{padding:6px;max-width:240px}
+#plantDrawing{margin-top:8px;padding:8px}
+.arrangement-settings{margin:12px 0;border:1px solid var(--line);border-radius:8px;background:white}
+.arrangement-settings>summary,.arrangement-config-section>summary{cursor:pointer;padding:12px;font-weight:600;color:var(--navy)}
+#arrangementConfig{padding:8px;margin:0;border:0}
+.arrangement-config-section{border-bottom:1px solid var(--line)}
+.arrangement-config-body{padding:0 10px 12px}
+#arrangementConfig table{font-size:12px}
+#arrangementConfig th,#arrangementConfig td{padding:5px 8px}
+#arrangementConfig td input,#arrangementConfig td select{padding:5px;font-size:12px;max-width:180px;width:100%}
+#arrangementConfig p{font-size:12px;line-height:1.5;margin:8px 0}
+@media(max-width:700px){.arrangement-drawing-controls{position:static}.arrangement-drawing-controls .fields{flex-basis:100%}.arrangement-drawing-controls select{max-width:180px}}
+@media print{.arrangement-drawing-controls,.arrangement-settings{display:none!important}}
