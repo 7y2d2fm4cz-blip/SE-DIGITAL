@@ -4,6 +4,16 @@ function descriptors(m,c,span=18){if(!Number.isFinite(span)||span<3)throw Error(
   const items=g.equipment.filter(e=>e.x<end-1e-7&&e.x+e.w>x+1e-7),tags=[...new Set(items.map(e=>e.panelTag||e.id))];for(let legendPage=0;legendPage<Math.max(1,Math.ceil(tags.length/48));legendPage++)pages.push({x0:x,x1:end,legendPage,label:`X ${F(x)}–${F(end)} m`+(legendPage?' · legenda '+(legendPage+1):'')});x=end;
  }return pages;
 }
+function keyPlan(m,c,p,index,total){
+ if(total<=1)return '';
+ const x=935,y=121,w=285,h=Math.max(16,Math.min(25,w*m.width/m.length)),at=v=>x+w*v/m.length,left=at(p.x0),width=w*(p.x1-p.x0)/m.length;
+ let body=`<g data-key-plan="true" data-total-length="${m.length}" aria-label="Planta-chave: localização da prancha ${index+1} no eletrocentro"><title>Vista esquemática do conjunto. Destaque azul: trecho desta prancha.</title><rect x="925" y="91" width="310" height="85" rx="4" fill="white" stroke="#9aafc0"/><text x="935" y="106" font-size="10">PLANTA-CHAVE · LOCALIZAÇÃO</text>`;
+ for(const [i,room]of m.rooms.entries())body+=`<rect x="${at(room.x)}" y="${y}" width="${w*room.len/m.length}" height="${h}" fill="${i%2?'#e9eef3':'#f5f7f9'}" stroke="#7e91a3"/>`;
+ body+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="#526c81"/>`;
+ for(const page of descriptors(m,c).filter(page=>page.legendPage===0&&page.x0>0))body+=`<line x1="${at(page.x0)}" y1="${y}" x2="${at(page.x0)}" y2="${y+h}" stroke="#9aafc0" stroke-dasharray="2 2"/>`;
+ body+=`<rect data-key-plan-highlight="true" data-x0="${p.x0}" data-x1="${p.x1}" x="${left}" y="${y-2}" width="${width}" height="${h+4}" style="fill:#2584db55;stroke:#155d9f;stroke-width:1.5"/><text x="${left+width/2}" y="${y+h/2+3}" text-anchor="middle" font-size="9" style="fill:#124c7b">${index+1}</text><text x="935" y="160" font-size="8.5">Conjunto X 0–${F(m.length)} m · Folha ${index+1}/${total}</text><text x="935" y="171" font-size="8.5">Azul: trecho X ${F(p.x0)}–${F(p.x1)} m (esquemático)</text></g>`;
+ return body;
+}
 function render(m,c,p,index=0,total=1,mode='plan'){const g=m.installation?.spatial||SEGeometry.calculate(m,c),span=p.x1-p.x0,s=Math.min(1080/(span+2*c.walkway),365/(m.width+2*c.walkway)),X=x=>(1280-span*s)/2+(x-p.x0)*s,Y=y=>185+(y+c.walkway)*s;
  const line=(x,y,u,v,extra='')=>`<line x1="${X(x)}" y1="${Y(y)}" x2="${X(u)}" y2="${Y(v)}" ${extra}/>`;const rect=(x,y,w,h,extra='')=>`<rect x="${X(x)}" y="${Y(y)}" width="${w*s}" height="${h*s}" ${extra}/>`;const text=(x,y,t,size=10)=>`<text x="${x}" y="${y}" font-size="${size}">${E(t)}</text>`;
  const items=g.equipment.filter(e=>e.x<p.x1-1e-7&&e.x+e.w>p.x0+1e-7),tags=[...new Set(g.equipment.map(e=>e.panelTag||e.id))],visible=[...new Set(items.map(e=>e.panelTag||e.id))],code=t=>tags.indexOf(t)+1,clip='plan-clip-'+index;
@@ -21,7 +31,7 @@ function render(m,c,p,index=0,total=1,mode='plan'){const g=m.installation?.spati
  for(const x of [p.x0,p.x1]){b+=line(x,-c.walkway,x,m.width+c.walkway,'stroke="#bf533e" stroke-dasharray="6 3"')+text(X(x)-25,Y(m.width+c.walkway)+24,'X='+F(x),11);}
  b+=text(45,605,`PAINÉIS / EQUIPAMENTOS DO TRECHO · largura total ${F(m.width)} m · trecho ${F(span)} m`,12);visible.slice(p.legendPage*48,(p.legendPage+1)*48).forEach((tag,i)=>{b+=text(45+Math.floor(i/12)*300,628+(i%12)*13,String(code(tag)).padStart(2,'0')+' · '+tag,10);});
  b+=text(45,792,'Coordenadas e quantitativos são do projeto completo; esta folha é uma janela de visualização.',11)+text(45,820,c.document+' · Rev. '+c.revision+' · Folha A-'+(index+1),12)+text(45,847,'PRÉ-DIMENSIONAMENTO — NÃO LIBERADO PARA CONSTRUÇÃO',11);
- return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 900" data-plan-page="${index}" data-x0="${p.x0}" data-x1="${p.x1}" role="img" aria-label="Planta parcial ${index+1}" stroke="#152338" fill="none"><style>text{font-family:Arial,sans-serif;fill:#152338;stroke:none}line,path,rect{stroke-width:1}</style><rect width="1280" height="900" fill="white" style="fill:white;stroke:none"/><rect x="20" y="20" width="1240" height="860"/>${Draw.brand?Draw.brand(1015,35,205):''}${b}</svg>`;
+ return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 900" data-plan-page="${index}" data-x0="${p.x0}" data-x1="${p.x1}" role="img" aria-label="Planta parcial ${index+1}" stroke="#152338" fill="none"><style>text{font-family:Arial,sans-serif;fill:#152338;stroke:none}line,path,rect{stroke-width:1}</style><rect width="1280" height="900" fill="white" style="fill:white;stroke:none"/><rect x="20" y="20" width="1240" height="860"/>${Draw.brand?Draw.brand(1015,35,205):''}${b}${keyPlan(m,c,p,index,total)}</svg>`;
 }
-root.SEPlanPages={descriptors,render};
+root.SEPlanPages={descriptors,render,keyPlan};
 })(globalThis);
