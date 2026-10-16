@@ -47,3 +47,6 @@ Porta dimensionada pela maior largura de estante + 0,20 m, mínimo conceitual de
 
 PAINÉIS A/B
 Vista frontal: todas as colunas do mesmo painel ficam numa única prancha, sem quebra a cada seis colunas. Ordem: saídas A, entrada A, TIE, entrada B e saídas B. Largura da prancha cresce com o conjunto; use zoom para leitura. Vistas superior e lateral permanecem na folha específica do mesmo painel. Cabeçalho e barra lateral mostram versão e data/hora fixa da atualização em Brasília.
+
+ALINHAMENTO FRONTAL DO ARRANJO
+Painéis de piso nas duas fileiras ficam com a frente voltada ao corredor central, alinhada pela face frontal. As traseiras ficam voltadas às paredes, com afastamento igual ou superior à folga traseira configurada. O corredor mantém o maior mínimo entre a premissa do projeto e os requisitos de fabricante cadastrados. Quadros de parede conservam sua fixação junto à parede. Planta, corte, 3D, rasgos e rotas usam a mesma geometria. A linha azul identifica a frente. Confirmar os afastamentos finais com o fabricante e a documentação contratual.
