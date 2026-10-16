@@ -56,3 +56,6 @@ Abra Projetos salvos. Os modelos Muito pequeno (4 linhas), Pequeno (12), Grande 
 
 PROJETOS GRANDES — PAGINAÇÃO E DESEMPENHO (V41)
 Arranjo e bandejamento usam pranchas de até 18 m nas coordenadas globais, com linhas de continuação. As páginas cobrem todo o comprimento; a modulação do transporte não é alterada. Grande: 4 folhas; Muito grande: 7; Gigante: 13 nas configurações iniciais dos modelos. Painéis e unifilares: somente a folha selecionada é gerada e exibida. A troca de corte ou ângulo altera apenas a visualização e é salva sem refazer o cálculo elétrico. Cargas, interligações e percursos têm grupos e páginas de 25 registros. Critérios e memórias são recolhíveis; tabelas e desenhos ocultos são gerados quando necessários. Impressão contém todas as cargas e pranchas, independentemente da página em tela, com valores textuais em vez de campos de edição. Abertura e salvamento dos projetos permanecem no mesmo armazenamento.
+
+PLANTA-CHAVE (V42)
+Cada folha de arranjo e bandejamento com mais de uma página inclui uma vista esquemática do conjunto, com o trecho atual destacado em azul, número da folha e intervalo X em metros. A localização acompanha a navegação e integra a impressão/PDF e o SVG da prancha. Folhas únicas dispensam a planta-chave. Geometria, quantitativos e projetos salvos permanecem preservados.

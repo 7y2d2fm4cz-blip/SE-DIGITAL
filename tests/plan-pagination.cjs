@@ -3,6 +3,16 @@ for(const f of ['engine.js','wall-qds.js','spatial.js','transport.js','drawings.
 const results=[];for(const example of ctx.SEProjectModels.list()){const state=JSON.parse(example.snapshot),c=state.profiles.Actemium,m=ctx.SE.calculate(state.loads,c),r=ctx.SEInstallation.calculate(m,c);m.installation=r;const before=JSON.stringify(m),pages=ctx.SEPlanPages.descriptors(m,c),spatial=r.spatial;assert(pages.length>0);assert.equal(pages[0].x0,0);assert(Math.abs(pages.at(-1).x1-m.length)<1e-7);
  let previous=0;for(const [i,p]of pages.entries()){if(p.legendPage===0){assert(Math.abs(p.x0-previous)<1e-7);previous=p.x1;}assert(p.x1>p.x0);assert(p.x1-p.x0<=18+1e-7);for(const mode of ['plan','routing']){const svg=ctx.SEPlanPages.render(m,c,p,i,pages.length,mode);assert(svg.endsWith('</svg>'));assert(!/NaN|undefined/.test(svg));assert(svg.includes('data-x0="'+p.x0+'"'));}}
  for(const e of spatial.equipment){assert(pages.some(p=>e.x<p.x1-1e-7&&e.x+e.w>p.x0+1e-7));for(const p of pages.filter(p=>p.legendPage===0))if(e.x<p.x1-1e-7&&e.x+e.w>p.x0+1e-7)assert(ctx.SEPlanPages.render(m,c,p).includes('data-equipment="'+ctx.Draw.esc(e.id)+'"'));}
+ for(const [i,p]of pages.entries())for(const mode of ['plan','routing']){
+  const svg=ctx.SEPlanPages.render(m,c,p,i,pages.length,mode),key=ctx.SEPlanPages.keyPlan(m,c,p,i,pages.length);
+  assert.equal((svg.match(/data-key-plan="true"/g)||[]).length,pages.length>1?1:0);
+  if(pages.length>1){const highlight=key.match(/data-key-plan-highlight="true"[^>]+/)[0];
+   assert(highlight.includes(`data-x0="${p.x0}" data-x1="${p.x1}"`));
+   const x=Number(highlight.match(/\sx="([^"]+)"/)[1]),width=Number(highlight.match(/\swidth="([^"]+)"/)[1]);
+   assert(Math.abs(x-(935+285*p.x0/m.length))<1e-7);assert(Math.abs(width-285*(p.x1-p.x0)/m.length)<1e-7);
+   assert(x>=935-1e-7&&x+width<=1220+1e-7);assert(key.includes(`Folha ${i+1}/${pages.length}`));
+  }
+ }
  const all=ctx.Draw.sld(m,c),tags=ctx.Draw.sldTags(m);assert.equal(tags.length,all.length);tags.forEach((tag,i)=>assert.equal(ctx.Draw.sld(m,c,tag)[0],all[i]));
  for(const p of m.panelComposition)assert(ctx.Draw.columnPage(m,c,p.panelTag).includes('<svg'));
  assert.equal(JSON.stringify(m),before);results.push({model:example.key,pages:pages.length,panels:tags.length});
