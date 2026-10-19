@@ -1,5 +1,5 @@
 const fs=require('fs'),vm=require('vm'),path=require('path'),assert=require('node:assert/strict'),root=path.join(__dirname,'..'),ctx={console,structuredClone};ctx.window=ctx;vm.createContext(ctx);
-for(const f of ['engine.js','wall-qds.js','spatial.js','transport.js','drawings.js','installation.js','project-models.js','automation.js','budget-base.js','budget-market.js','budget-prices.js','budget.js'])vm.runInContext(fs.readFileSync(path.join(root,f),'utf8'),ctx,{filename:f});
+for(const f of ['engine.js','wall-qds.js','spatial.js','transport.js','drawings.js','installation.js','project-models.js','automation.js','budget-base.js','budget-market.js','budget-prices.js','budget-provisions.js','budget.js'])vm.runInContext(fs.readFileSync(path.join(root,f),'utf8'),ctx,{filename:f});
 const B=ctx.SEBudget;
 assert.equal(ctx.SE_BUDGET_PRICES.rows.length,0);
 for(const example of ctx.SEProjectModels.list()){
