@@ -1,0 +1,14 @@
+const fs=require('fs'),vm=require('vm'),path=require('path'),assert=require('node:assert/strict'),root=path.join(__dirname,'..'),ctx={console,structuredClone};ctx.window=ctx;vm.createContext(ctx);
+for(const f of ['engine','wall-qds','spatial','transport','drawings','installation','project-models','automation','budget-base','budget-market','budget-prices','budget'])vm.runInContext(fs.readFileSync(path.join(root,f+'.js'),'utf8'),ctx,{filename:f});
+const B=ctx.SEBudget,base=ctx.SE_BUDGET_BASE;assert.equal(base.rows.length,111);assert.equal(base.rows.filter(r=>r.price!==null).length,73);assert.equal(base.rows.find(r=>r.id==='MT-3').price,237000);assert.equal(base.rows.find(r=>r.id==='BT-44').price,22000);assert.equal(base.rows.find(r=>r.id==='BT-21').price,null);
+for(const example of ctx.SEProjectModels.list()){
+ const st=JSON.parse(example.snapshot),c=st.profiles.Actemium;c.automation={enabled:true};const m=ctx.SE.calculate(st.loads,c),i=ctx.SEInstallation.calculate(m,c),before=JSON.stringify(st),r=B.calculate(m,c,i);
+ assert.equal(JSON.stringify(st),before);assert(r.total>0);assert(r.lines.some(q=>q.priceKind==='PPU'));assert(r.lines.some(q=>q.priceKind==='Estimativa'));assert(r.lines.find(q=>q.id==='shell:frame').price>0);assert(r.lines.filter(q=>q.priceKind==='Estimativa'||q.priceKind==='Mercado').every(q=>q.sourceUrl?.startsWith('https://')&&q.pricingBasis));
+ const zero=B.calculate(m,{...c,budget:{overrides:{'shell:frame':{price:0}}}},i);assert.equal(zero.lines.find(q=>q.id==='shell:frame').total,0);assert.equal(zero.lines.find(q=>q.id==='shell:frame').priceKind,'Manual');
+ const missing=B.calculate(m,{...c,budget:{overrides:{'shell:frame':{price:null}}}},i);assert(missing.lines.find(q=>q.id==='shell:frame').pending);
+ const off=B.calculate(m,{...c,budget:{useMarket:false}},i);assert.equal(off.lines.find(q=>q.id==='shell:frame').price,null);assert(off.lines.some(q=>q.priceKind==='PPU'));assert(off.total<r.total);
+ for(const q of r.lines.filter(q=>q.priceKind==='PPU'))assert.equal(q.price,base.rows.find(v=>v.id===q.ref).price);
+ const imported=B.calculate(m,{...c,budget:{catalog:{file:'Teste',rows:[{id:'MT-3',description:'Referência de teste',price:123,sheet:'Teste',cell:'B3'}]}}},i);assert(imported.lines.filter(q=>q.ref==='MT-3').every(q=>q.price===123));
+ const kinds=Math.round(r.priceKinds.reduce((n,k)=>n+k.total,0)*100)/100;assert(Math.abs(kinds-r.subtotal)<.02);console.log(example.key+': PPU '+r.priceKinds.find(k=>k.kind==='PPU').count+', estimativas '+r.priceKinds.find(k=>k.kind==='Estimativa').count+', pendências '+r.pending.length);
+}
+assert.throws(()=>B.config({budget:{usd:0}}));assert.throws(()=>B.config({budget:{importFactor:-1}}));console.log('PASS: built-in PPU, exact prices, market formulas/source attribution, manual/null/zero priority, disable estimates, imported catalog priority, five sizes, no mutation.');
