@@ -17,6 +17,18 @@ function estimate(r,m,c,p,installation){
  }
  return null;
 }
+
+const shellIds=['shell:frame','shell:floor','shell:roof','shell:walls','shell:partitions','scope:personnel','scope:equipment','aux:lighting','aux:earthing','aux:fire'];
+function shellAllocation(lines,m,c,p,installation){
+ const prices=new Map();if(!p.useMarket||p.shellMethod==='detailed')return {prices,enabled:false};
+ const reference=data.curves.find(q=>q.id===2),rate=p.shellRate,area=m.length*m.width,target=area*rate;
+ const entries=lines.filter(r=>shellIds.includes(r.id)&&r.qty>0).map(r=>({r,estimate:r.price!==null?{price:r.price}:estimate(r,m,c,p,installation)||root.SEBudgetMarket?.estimate(r,m,c,p)||root.SEBudgetProvisions?.estimate(r,m,c,p,installation)}));
+ const weight=entries.reduce((sum,q)=>sum+q.r.qty*(q.estimate?.price||0),0);
+ if(!(weight>0))return {prices,enabled:false};
+ const factor=target/weight;
+ for(const {r,estimate:e} of entries){if(r.price!==null||!e)continue;prices.set(r.id,{price:e.price*factor,priceKind:'Histórico',source:'Curva histórica de eletrocentros · nível 2 · set/2025 → set/2026',shellAllocated:true,pricingBasis:'Pacote casco + iluminação + aterramento + SDAI: '+area.toFixed(2)+' m² × R$ '+rate.toFixed(2)+'/m². Referência da planilha: R$ 35.000/m² × '+reference.factor.toFixed(9)+' = R$ '+reference.updated.toFixed(2)+'/m². Rateio conceitual proporcional à composição detalhada: participação '+(r.qty*e.price/weight*100).toFixed(3)+'%; fator '+factor.toFixed(6)+'. A planilha não discrimina estes preços unitários. Confirmar escopo, impostos e fornecedor. Sem pilotis, acessos, HVAC, equipamentos, combate ou montagem de campo.'});}
+ return {prices,enabled:true,rate,area,target,weight,factor};
+}
 function comparisons(r){return data.curves.map(q=>{const scope=q.id===1?r.lines.filter(l=>l.id.startsWith('shell:')||['scope:personnel','scope:equipment'].includes(l.id)):q.id===2?r.lines.filter(l=>l.id.startsWith('shell:')||['scope:personnel','scope:equipment','aux:lighting','aux:earthing','aux:fire'].includes(l.id)):q.id===3?r.lines.filter(l=>!l.id.startsWith('civil:')&&!l.id.startsWith('service:')||l.id==='service:fat'):r.lines;const subtotal=scope.filter(l=>l.status==='active').reduce((sum,l)=>sum+(l.total||0),0);return {...q,projectPerM2:r.area?subtotal/r.area:null,note:'Comparação indicativa de escopo, sem impostos/BDI/contingência adicionais; verificar inclusões e equalização. Não altera o total.'};});}
-root.SEBudgetHistory={data,estimate,comparisons};
+root.SEBudgetHistory={data,estimate,comparisons,shellAllocation,shellIds};
 })(globalThis);
