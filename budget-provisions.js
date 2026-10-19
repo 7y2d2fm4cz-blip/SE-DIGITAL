@@ -5,9 +5,10 @@ function estimate(r,m,c,p,installation){
  const provision=(price,basis)=>({price,priceKind:'Provisão',source:'Provisão interna de orçamento · 19/10/2026',pricingBasis:basis+' Valor conceitual, sem cotação; confirmar escopo e preço com fornecedor.'});
  const ppu=(key,factor,basis)=>{const q=p.catalog.rows.find(q=>q.id===key&&q.price>0);return q?{...provision(q.price*factor,basis+' Base '+key+' × '+factor.toFixed(3)+'.'),source:p.catalog.file+' · '+q.sheet+'!'+q.cell+' · analogia, não preço original'}:null;};
  const fixed={
+  'aux:fire-suppression':[Math.max(5000,area*80),'Provisão de extintores: max(R$ 5.000, R$ 80/m²); rede de hidrantes/agente fixo não dimensionada, substituir conforme estudo de risco'],
   'aux:lighting':[Math.max(8000,area*160),'Materiais: max(R$ 8.000, R$ 160/m²), luminárias, emergência e tomadas; sem quadros e cabos de alimentação já listados'],
   'aux:earthing':[Math.max(15000,area*180),'Materiais: max(R$ 15.000, R$ 180/m²), malha local/SPDA/equipotencialização; solo e malha externa a validar'],
-  'aux:fire':[25000+area*300,'R$ 25.000 de central + R$ 300/m² em detecção e combate portátil; sistema fixo/agente e hidráulica não definidos, revisar provisão conforme risco'],
+  'aux:fire':[25000+area*220,'SDAI: R$ 25.000 de central + R$ 220/m² em detecção/alarme; combate separado'],
   'aux:ventilation':[Math.max(12000,m.rooms.filter(q=>/bat/i.test(q.name||q.id||'')).length*12000),'Mínimo R$ 12.000, um conjunto por sala de baterias identificada; vazão, redundância e classificação a conferir'],
   'aux:sealing':[Math.max(6000,m.eq.length*400),'Materiais: max(R$ 6.000, R$ 400/equipamento); número e área das passagens a confirmar'],
   'service:freight':[35000,'R$ 35.000/módulo, provisão rodoviária com AET/escolta/seguro; origem, destino, distância e dimensões a cotar'],

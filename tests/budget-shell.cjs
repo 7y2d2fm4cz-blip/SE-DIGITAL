@@ -1,0 +1,18 @@
+const fs=require('fs'),vm=require('vm'),path=require('path'),assert=require('node:assert/strict'),root=path.join(__dirname,'..'),ctx={console,structuredClone};ctx.window=ctx;vm.createContext(ctx);
+for(const f of ['engine','wall-qds','spatial','transport','drawings','installation','project-models','automation','budget-base','budget-market','budget-prices','budget-provisions','budget-history-data','budget-history','budget'])vm.runInContext(fs.readFileSync(path.join(root,f+'.js'),'utf8'),ctx,{filename:f});
+for(const example of ctx.SEProjectModels.list()){
+ const state=JSON.parse(example.snapshot),c=state.profiles.Actemium;c.automation={enabled:true};const m=ctx.SE.calculate(state.loads,c),i=ctx.SEInstallation.calculate(m,c),before=JSON.stringify(m),B=ctx.SEBudget,r=B.calculate(m,c,i);
+ const covered=r.lines.filter(q=>ctx.SEBudgetHistory.shellIds.includes(q.id)),tol=covered.reduce((a,q)=>a+(q.qty||0)*.005+.005,0)+.05;
+ assert(r.shell.enabled);assert(Math.abs(r.shell.allocated-r.shell.target)<=tol);assert.equal(r.pending.length,0);assert.equal(JSON.stringify(m),before);
+ assert(covered.filter(q=>q.qty>0).every(q=>q.shellAllocated&&q.priceKind==='Histórico'));assert(r.lines.find(q=>q.id==='scope:hvac')?.shellAllocated!==true);assert(r.lines.find(q=>q.id==='aux:fire-suppression').price>0);assert(!r.lines.find(q=>q.id==='aux:fire-suppression').shellAllocated);
+ const detailed=B.calculate(m,{...c,budget:{shellMethod:'detailed'}},i);assert(!detailed.shell.enabled);assert(r.total>detailed.total);
+ const doubled=B.calculate(m,{...c,budget:{shellRate:r.parameters.shellRate*2}},i);assert(Math.abs(doubled.shell.allocated-2*r.shell.allocated)<tol*3);
+ for(const q of r.lines.filter(q=>q.priceKind==='PPU')){assert.equal(q.price,doubled.lines.find(v=>v.id===q.id).price);assert.equal(q.price,detailed.lines.find(v=>v.id===q.id).price);}
+ const manual=B.calculate(m,{...c,budget:{overrides:{'shell:floor':{price:1234.56},'shell:roof':{status:'excluded'}}}},i);assert.equal(manual.lines.find(q=>q.id==='shell:floor').price,1234.56);assert.equal(manual.lines.find(q=>q.id==='shell:roof').total,null);assert.equal(manual.shell.overrides,2);
+ const customPpu=B.calculate(m,{...c,budget:{overrides:{'shell:floor':{ref:'BT-44'}}}},i);assert.equal(customPpu.lines.find(q=>q.id==='shell:floor').price,22000);assert.equal(customPpu.lines.find(q=>q.id==='shell:floor').priceKind,'PPU');
+ const adjusted=B.calculate(m,{...c,budget:{adjustment:10,contingency:5,bdi:12}},i);assert(Math.abs(adjusted.shell.allocated-r.shell.allocated*1.1)<tol*3);assert(Math.abs(adjusted.total-(adjusted.subtotal+adjusted.contingency+adjusted.bdi))<.02);
+ const coveredIed=m.automation.ieds.find(d=>r.lines.find(q=>q.id==='ied:'+d.id)?.status==='included'&&r.lines.some(q=>q.id==='panel:'+d.asset));if(coveredIed){const ex=B.calculate(m,{...c,budget:{overrides:{['panel:'+coveredIed.asset]:{status:'excluded'}}}},i);assert.equal(ex.lines.find(q=>q.id==='ied:'+coveredIed.id).status,'active');}
+ assert.equal(new Set(r.lines.map(q=>q.id)).size,r.lines.length);assert(!r.lines.some(q=>q.id.startsWith('cable:NET-')));assert(r.lines.filter(q=>q.status==='included').every(q=>q.total===null));
+ console.log(JSON.stringify({model:example.key,area:r.area,oldShell:detailed.lines.filter(q=>ctx.SEBudgetHistory.shellIds.includes(q.id)).reduce((n,q)=>n+(q.total||0),0),newShell:r.shell.allocated,target:r.shell.target,total:r.total,ppu:r.priceKinds.find(q=>q.kind==='PPU').total}));
+}
+assert.throws(()=>ctx.SEBudget.config({budget:{shellMethod:'bad'}}));assert.throws(()=>ctx.SEBudget.config({budget:{shellRate:0}}));console.log('PASS: historical shell applied exactly once, five sizes, scope boundaries, PPU/manual protection, exclusions, commercial factors and no mutation.');
